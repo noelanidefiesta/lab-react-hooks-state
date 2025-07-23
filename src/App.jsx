@@ -1,38 +1,45 @@
-import React, { useState } from 'react'
-import ProductList from './components/ProductList'
-import DarkModeToggle from './components/DarkModeToggle'
-import Cart from './components/Cart'
+import { useState } from "react";
+import DarkModeToggle from "./components/DarkModeToggle";
+import ProductList from "./components/ProductList";
+import Cart from "./Cart";
+import products from "./products";
 
-const App = () => {
-  // TODO: Implement state for dark mode toggle
+function App() {
+  const [cartItems, setCartItems] = useState([]);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
-  // TODO: Implement state for cart management
+  function handleBuyNow(product) {
+    setCartItems([...cartItems, product]);
+  }
 
-  // TODO: Implement state for category filtering
+  function toggleDarkMode() {
+    setIsDarkMode((prevMode) => !prevMode);
+  }
+
+  const filteredProducts =
+    selectedCategory === "All"
+      ? products
+      : products.filter((product) => product.category === selectedCategory);
+
+  const appClass = isDarkMode ? "App dark-mode" : "App";
 
   return (
-    <div>
-      <h1>🛒 Shopping App</h1>
-      <p>
-        Welcome! Your task is to implement filtering, cart management, and dark
-        mode.
-      </p>
-
-      {/* TODO: Render DarkModeToggle and implement dark mode functionality */}
-
-      {/* TODO: Implement category filter dropdown */}
-      <label>Filter by Category: </label>
-      <select>
-        <option value="all">All</option>
-        <option value="Fruits">Fruits</option>
-        <option value="Dairy">Dairy</option>
-      </select>
-
-      <ProductList />
-
-      {/* TODO: Implement and render Cart component */}
+    <div className={appClass}>
+      <DarkModeToggle isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
+      <h1>Product Dashboard</h1>
+      <Cart cartItems={cartItems} />
+      <label>
+        Filter by Category:
+        <select onChange={(e) => setSelectedCategory(e.target.value)}>
+          <option value="All">All</option>
+          <option value="Tech">Tech</option>
+          <option value="Clothing">Clothing</option>
+        </select>
+      </label>
+      <ProductList products={filteredProducts} onBuyNow={handleBuyNow} />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
